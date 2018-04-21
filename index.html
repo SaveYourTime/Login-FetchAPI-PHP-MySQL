@@ -2,113 +2,88 @@
 <html>
 
 <head>
-    <!-- 編碼 -->
-    <meta charset="UTF-8">
-    <!-- 標題 -->
-    <title>Login Page with Fetch API Backend-PHP Database-MySQL</title>
-    <!-- 可視區域 -->
-    <meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <!-- 網頁標題的icon -->
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <!-- 匯入css -->
-    <link rel="stylesheet" type="text/css" href="css/login.css">
-    <!-- 匯入js -->
-    <script src="js/jquery-3.2.1.min.js"></script>
-    <script src="js/web_lib.js"></script>
+	<meta charset="UTF-8">
+	<title>Login Page with Fetch API Backend-PHP Database-MySQL</title>
+	<meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<!-- import css -->
+	<link rel="stylesheet" type="text/css" href="css/login.css">
+	<!-- import js -->
+	<script src="js/jquery-3.2.1.min.js"></script>
+	<script src="js/web_lib.js"></script>
 
-    <script>
-        $(function () {
-            // Get Element
-            let loginBtn = document.getElementById('loginBtn');
-            let signUpBtn = document.getElementById('signUpBtn');
-            // Bind Event
-            loginBtn.addEventListener('click', login);
-            signUpBtn.addEventListener('click', signUp);
+	<script>
+		$(function () {
+			// Get Element
+			const loginBtn = document.getElementById('loginBtn');
+			const signUpBtn = document.getElementById('signUpBtn');
+			// Bind Event
+			loginBtn.addEventListener('click', loginOrSignUp);
+			signUpBtn.addEventListener('click', loginOrSignUp);
 
-            // Trigger Event
-            function login() {
-                let account = document.getElementById('account').value;
-                let password = document.getElementById('password').value;
-                // check if account or password is null
-                if (account === '' || password === '') {
-                    console.log('please fill up both account and password!');
-                } else {
-                    // Set the data object
-                    let objData = {
-                        'account': account,
-                        'password': password
-                    }
-                    easyFetch('cmd.php?func=login', objData, xhr => {
-                        if (xhr['status'] == 1) {
-                            console.log('登入成功');
-                        } else {
-                            console.log('登入失敗');
-                        }
-                    });
-                }
-            }
-            function signUp() {
-                let account = document.getElementById('account').value;
-                let password = document.getElementById('password').value;
-                // check if account or password is null
-                if (account === '' || password === '') {
-                    console.log('please fill up both account and password!');
-                } else {
-                    // Set the data object
-                    let objData = {
-                        'account': account,
-                        'password': password
-                    }
-                    easyFetch('cmd.php?func=signUp', objData, xhr => {
-                        if (xhr['status'] == 1) {
-                            console.log('註冊成功');
-                        } else {
-                            console.log('註冊失敗');
-                        }
-                    });
-                }
-            }
-        })
-    </script>
+			// Trigger Event
+			function checkLoginInfo(account, password) {
+				// check if account or password is null
+				if (account === '' || password === '') {
+					return false;
+				} else {
+					return true;
+				}
+			}
+			function loginOrSignUp(e) {
+				const account = document.getElementById('account').value;
+				const password = document.getElementById('password').value;
+
+				if (checkLoginInfo(account, password)) {
+					// Set the data object
+					const objData = {
+						'account': account,
+						'password': password
+					}
+					const accessType = e.target.value === 'Login' ? `login` : `signUp`;
+					easyFetch(`cmd.php?func=${accessType}`, objData, data => {
+						if (data['status'] === 1) {
+							console.log(`${accessType} Success`);
+						} else {
+							console.log(`${accessType} Failed`);
+						}
+					});
+				}
+			}
+
+		})
+	</script>
 </head>
 
 <body>
-    <div id="main">
-        <!-- 登入區 -->
-        <section id="login">
-            <div id="loginSegment">
-                <!-- 登入區標題 -->
-                <header id="loginHeader">
-                    <img id="loginHeaderPic" src="img/login.png" alt="" />
-                </header>
-                <!-- 登入區表單 -->
-                <form action="" method="post" name="login" onsubmit="return false">
-                    <!-- 帳號 -->
-                    <div class="fieldWrapper">
-                        <input type="text" id="account" name="login_account" placeholder="帳號" required="required">
-                    </div>
-                    <!-- 密碼 -->
-                    <div class="fieldWrapper">
-                        <input type="password" id="password" name="login_password" placeholder="密碼" required="required" autocomplete>
-                    </div>
-                    <!-- 登入按鈕 -->
-                    <input type="submit" id="loginBtn" name="login_button" value="登入" />
-                </form>
-                <!-- 忘記密碼 -->
-                <div id="forgotLink">
-                    <a href="">無法登入？</a>
-                </div>
-                <!-- 註冊區 -->
-                <div id="signUpContainer">
-                    <div id="signUpDivider">
-                        <span id="signUpDividerText">或者</span>
-                    </div>
-                    <a onclick="return false;" id="signUpBtn">註冊</a>
-                </div>
-            </div>
-        </section>
-    </div>
+	<div id="main">
+		<section id="login">
+			<div id="loginSegment">
+				<header id="loginHeader">
+					<img id="loginHeaderPic" src="img/login.png" alt="" />
+				</header>
+				<form action="" method="post" name="login" onsubmit="return false;">
+					<div class="fieldWrapper">
+						<input type="email" id="account" name="login_account" placeholder="Email" required="required">
+					</div>
+					<div class="fieldWrapper">
+						<input type="password" id="password" name="login_password" placeholder="Password" required="required" autocomplete>
+					</div>
+					<input type="submit" id="loginBtn" name="login_button" value="Login" />
+				</form>
+				<div id="forgotLink">
+					<a href="" onclick="return false;">Forget your password?</a>
+				</div>
+				<div id="signUpContainer">
+					<div id="signUpDivider">
+						<span id="signUpDividerText">or</span>
+					</div>
+					<a onclick="return false;" id="signUpBtn">Create an Account</a>
+				</div>
+			</div>
+		</section>
+	</div>
 </body>
 
 </html>
